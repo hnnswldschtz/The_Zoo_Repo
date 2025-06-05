@@ -4,7 +4,6 @@
 //Started SoftwareSerial at RX and TX pin of ESP8266/NodeMCU
 
 uint8_t receiverAddress[][6] = {
-{0x0, 0x0, 0x0, 0x0, 0x0, 0x0},
 {0x50, 0x02, 0x91, 0x75, 0x14, 0x16},
 {0xBC, 0xFF, 0x4D, 0xCA, 0xBF, 0xB1},
 {0x84, 0xCC, 0xA8, 0x98, 0x98, 0xA7},
@@ -16,26 +15,26 @@ uint8_t receiverAddress[][6] = {
 {0xF4, 0xCF, 0xA2, 0xEB, 0xFC, 0x18},
 {0xA0, 0x20, 0xA6, 0x13, 0x11, 0x60}};
 /*
+0 USBC
 1 USBC
 2 USBC
 3 USBC
 4 USBC
-5 USBC
+5 MicroUSB
 6 MicroUSB
 7 MicroUSB
 8 MicroUSB
-9 MicroUSB
-10 old version
+9 old version
 */
 
 
 
 typedef struct customMessage {
     bool isGlobal;  //anotates if message is directed at some other device specifically or directly to a specific device
-    int address;    //if not global, should have address 0-10
+    int address;    //if not global, should have address 0-9
     bool isPing;    //true of message is ping, if not check value(payload)
     int value;      //value of payload 0-255
-    int sender;     //our device ID 0-10
+    int sender;     //our device ID 0-9
     
 } customMessage;
 
@@ -140,9 +139,9 @@ void createAndSendMsgFromString(String message){ //handleMessageFromArduino
 
       //first char isPing 0 or 1
       //second char isGlobal 0 or 1
-      //third char if global insert any char (wont be read later anyway) else int 1-10 for adresses
+      //third char if global insert any char (wont be read later anyway) else int 1-9 for adresses
       //4th 5th and 6th if Ping insert any chars (wont be read later anyway) else int 000-255
-      //7th int of my device 1-10
+      //7th int of my device 1-9
 
       //EXAMPLE "0031232" private msg
       // Ping   Glob  addr  val   sender

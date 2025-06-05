@@ -15,7 +15,7 @@ bool state = false;
 #define MY_SENDER_ID 4
 
 /* sender IDs:
-
+0
 1
 2
 3
@@ -25,7 +25,6 @@ bool state = false;
 7
 8
 9
-10
 
 */
 
@@ -161,9 +160,9 @@ String createMessage(bool ping, bool global, int address, int value, int sender)
 
       //first char isPing 0 or 1
       //second char isGlobal 0 or 1
-      //third char if global insert any char (wont be read later anyway) else int 0-6
+      //third char if global insert any char (wont be read later anyway) else int 0-9
       //4th 5th and 6th if Ping insert any chars (wont be read later anyway) else int 000-255
-      //7th int of my device 0-6
+      //7th int of my device 0-9
 
       //EXAMPLE "0031232" private msg
       // Ping   Glob  addr  val   sender

@@ -6,7 +6,6 @@
 SoftwareSerial NodeMcu_SoftSerial(D1,D2); //D1 connect to TX pin arduino, D2 connect to RX pin on arduino
 
 uint8_t receiverAddress[][6] = {
-{0x0, 0x0, 0x0, 0x0, 0x0, 0x0},
 {0x50, 0x02, 0x91, 0x75, 0x14, 0x16},
 {0xBC, 0xFF, 0x4D, 0xCA, 0xBF, 0xB1},
 {0x84, 0xCC, 0xA8, 0x98, 0x98, 0xA7},
@@ -32,10 +31,10 @@ uint8_t receiverAddress[][6] = {
 
 typedef struct customMessage {
     bool isGlobal;  //anotates if message is directed at some other device specifically or directly to a specific device
-    int address;    //if not global, should have address 0-10
+    int address;    //if not global, should have address 0-9
     bool isPing;    //true of message is ping, if not check value(payload)
     int value;      //value of payload 0-255
-    int sender;     //our device ID 0-10
+    int sender;     //our device ID 0-9
 } customMessage;
 
 customMessage myReceivedMessage;
@@ -89,14 +88,13 @@ void messageReceived(uint8_t* macAddr, uint8_t* incomingData, uint8_t len){
       dataToArduino += String(myReceivedMessage.value / 10 % 10);
       dataToArduino += String(myReceivedMessage.value % 10);
     }
-    messageSent(5, 6);
     dataToArduino += String(myReceivedMessage.sender);
     dataToArduino +="\n";
     //first char isPing 0 or 1
     //second char isGlobal 0 or 1
-    //third char if global insert any char (wont be read later anyway) else int 0-6 ADDRESS
+    //third char if global insert any char (wont be read later anyway) else int 0-9 ADDRESS
     //4th 5th and 6th if Ping insert any chars (wont be read later anyway) else int 000-255 VALUE
-    //7th int of my device 0-6
+    //7th int of my device 0-9
 
     //EXAMPLE "01x1230"
     Serial.print("making String to Arduino:    ");
@@ -119,9 +117,9 @@ void handleMessageFromArduino(String message){
 
       //first char isPing 0 or 1
       //second char isGlobal 0 or 1
-      //third char if global insert any char (wont be read later anyway) else int 0-6
+      //third char if global insert any char (wont be read later anyway) else int 0-9
       //4th 5th and 6th if Ping insert any chars (wont be read later anyway) else int 000-255
-      //7th int of my device 0-6
+      //7th int of my device 0-9
 
       //EXAMPLE "0031232" private msg
       // Ping   Glob  addr  val   sender

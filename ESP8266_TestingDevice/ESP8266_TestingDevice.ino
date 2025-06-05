@@ -1,22 +1,10 @@
 #include <espnow.h>
 #include "ESP8266WiFi.h"
 
-//uint8_t receiverAddress[] = {0xf4,  0xcf,  0xa2,  0xeb,  0xfc,  0xd6  };
 
-// typedef struct messageToBeSent{
-//     char text[64];
-//     long runTime;
-// } messageToBeSent;
 
-typedef struct customMessage {
-    bool isGlobal;  //anotates if message is directed at some other device specifically or directly to a specific device
-    int address;    //if not global, should have address 0-6
-    bool isPing;    //true of message is ping, if not check value(payload)
-    int value;      //value of payload 0-255
-    int sender;     //our device ID 0-6
-} customMessage;
-
-uint8_t receiverAddress[][6] = {
+uuint8_t receiverAddress[][6] = {
+{0x0, 0x0, 0x0, 0x0, 0x0, 0x0},
 {0x50, 0x02, 0x91, 0x75, 0x14, 0x16},
 {0xBC, 0xFF, 0x4D, 0xCA, 0xBF, 0xB1},
 {0x84, 0xCC, 0xA8, 0x98, 0x98, 0xA7},
@@ -40,32 +28,32 @@ uint8_t receiverAddress[][6] = {
 9 old version
 */
 
+typedef struct customMessage {
+    bool isGlobal;  //anotates if message is directed at some other device specifically or directly to a specific device
+    int address;    //if not global, should have address 0-10
+    bool isPing;    //true of message is ping, if not check value(payload)
+    int value;      //value of payload 0-255
+    int sender;     //our device ID 0-10
+} customMessage;
 
-// typedef struct receivedMessage {
-//     char text[64];
-//     int intVal;
-//     float floatVal;
-// } receivedMessage;
 
-// messageToBeSent myMessageToBeSent; 
-// receivedMessage myReceivedMessage; 
-customMessage myCustomMessage;
-customMessage myCustomToSend;
+customMessage myReceivedMessage;
+customMessage myMessageToSend;
 
 void messageReceived(uint8_t* macAddr, uint8_t* incomingData, uint8_t len){
-    memcpy(&myCustomMessage, incomingData, sizeof(myCustomMessage));
+    memcpy(&myReceivedMessage, incomingData, sizeof(myReceivedMessage));
     Serial.printf("Incoming Message from: %02X:%02X:%02X:%02X:%02X:%02X \n\r", 
             macAddr[0], macAddr[1], macAddr[2], macAddr[3], macAddr[4], macAddr[5]);
     Serial.print("isGlobal: ");
-    Serial.println(myCustomMessage.isGlobal);
+    Serial.println(myReceivedMessage.isGlobal);
     Serial.print("address: ");
-    Serial.println(myCustomMessage.address);
+    Serial.println(myReceivedMessage.address);
     Serial.print("isPing: ");
-    Serial.println(myCustomMessage.isPing);
+    Serial.println(myReceivedMessage.isPing);
     Serial.print("value: ");
-    Serial.println(myCustomMessage.value);
+    Serial.println(myReceivedMessage.value);
     Serial.print("sender: ");
-    Serial.println(myCustomMessage.sender);
+    Serial.println(myReceivedMessage.sender);
     Serial.println(); 
 
     // char textMsg[] = "Thanks for the data!";
@@ -88,25 +76,31 @@ void setup(){
     }
 
     esp_now_set_self_role(ESP_NOW_ROLE_COMBO);
-  for (int i=0;i<sizeof(receiverAddress) / sizeof(receiverAddress[0]); ;i++) {
+
+    // check length of receiverAddress structure
+    //iterate through all the possible addresses and add them as peers
+    for (int i=0;i<sizeof(receiverAddress) / sizeof(receiverAddress[0]); ;i++) {
       uint8_t result = esp_now_add_peer(receiverAddress[i], ESP_NOW_ROLE_COMBO, 0, NULL, 0);    
       if(result != 0){
         Serial.println("Failed to add peer");
       }
     }
     
-    esp_now_register_recv_cb(messageReceived);
+    //call back functions for sending and receiving messages
+    esp_now_register_send_cb(messageSent);  
+    esp_now_register_recv_cb(messageReceived); 
+
 }
  
 void loop(){
   //TESTING SEND TO Device ESP
     if(true){
-      myCustomToSend.isPing = random(0,2);
-      myCustomToSend.isGlobal = random(0,2);
-      myCustomToSend.address = random(1,6);
-      myCustomToSend.value = random(0,255);
-      myCustomToSend.sender = random(0,6);
-      esp_now_send(receiverAddress[myCustomToSend.address], (uint8_t *) &myCustomToSend, sizeof(myCustomToSend));
+      myMessageToSend.isPing = random(0,2);
+      myMessageToSend.isGlobal = random(0,2);
+      myMessageToSend.address = random(1,6);
+      myMessageToSend.value = random(0,255);
+      myMessageToSend.sender = random(0,6);
+      esp_now_send(receiverAddress[myMessageToSend.address], (uint8_t *) &myMessageToSend, sizeof(myMessageToSend));
       Serial.println("sending random data");
     }
     delay(10000);

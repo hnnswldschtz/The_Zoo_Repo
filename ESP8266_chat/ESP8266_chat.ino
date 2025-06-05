@@ -123,9 +123,13 @@ void setup(){
     esp_now_register_send_cb(messageSent);  
     esp_now_register_recv_cb(messageReceived); 
 
-    // Add all peers from receiverAddress array
-    for (int i = 0; i < sizeof(receiverAddress)/6; i++) {
-        esp_now_add_peer(receiverAddress[i], ESP_NOW_ROLE_COMBO, 0, NULL, 0);
+    // check length of receiverAddress structure
+    //iterate through all the possible addresses and add them as peers
+    for (int i=0;i<sizeof(receiverAddress) / sizeof(receiverAddress[0]);i++) {
+      uint8_t result = esp_now_add_peer(receiverAddress[i], ESP_NOW_ROLE_COMBO, 0, NULL, 0);    
+      if(result != 0){
+        Serial.println("Failed to add peer");
+      }
     }
 
     Serial.println("Enter message in format: index;message");

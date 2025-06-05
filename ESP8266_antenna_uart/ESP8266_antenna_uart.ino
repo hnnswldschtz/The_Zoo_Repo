@@ -6,6 +6,7 @@
 SoftwareSerial NodeMcu_SoftSerial(D1,D2); //D1 connect to TX pin arduino, D2 connect to RX pin on arduino
 
 uint8_t receiverAddress[][6] = {
+{0x0, 0x0, 0x0, 0x0, 0x0, 0x0},
 {0x50, 0x02, 0x91, 0x75, 0x14, 0x16},
 {0xBC, 0xFF, 0x4D, 0xCA, 0xBF, 0xB1},
 {0x84, 0xCC, 0xA8, 0x98, 0x98, 0xA7},
@@ -28,17 +29,17 @@ uint8_t receiverAddress[][6] = {
 8 MicroUSB
 9 old version
 */
+
 typedef struct customMessage {
     bool isGlobal;  //anotates if message is directed at some other device specifically or directly to a specific device
-    int address;    //if not global, should have address 0-6
-    bool isPing;    //true if message is ping, if not check value(payload)
+    int address;    //if not global, should have address 0-10
+    bool isPing;    //true of message is ping, if not check value(payload)
     int value;      //value of payload 0-255
-    int sender;     //our device ID 0-6
-    
+    int sender;     //our device ID 0-10
 } customMessage;
 
-customMessage myCustomMessage;
-customMessage myCustomToSend;
+customMessage myReceivedMessage;
+customMessage myMessageToSend;
 
 String arduino_recivedString;
 
@@ -67,29 +68,29 @@ void messageSent(uint8_t *macAddr, uint8_t status) {
 void messageReceived(uint8_t* macAddr, uint8_t* incomingData, uint8_t len){
     //triggered if message is received from esp
 
-    memcpy(&myCustomMessage, incomingData, sizeof(myCustomMessage));
+    memcpy(&myReceivedMessage, incomingData, sizeof(myReceivedMessage));
     Serial.printf("Incoming Message from: %02X:%02X:%02X:%02X:%02X:%02X \n\r", macAddr[0], macAddr[1], macAddr[2], macAddr[3], macAddr[4], macAddr[5]);    
     
     //Sending data to arduino using serial connection
     String dataToArduino;
 
-    dataToArduino += String(myCustomMessage.isPing);
-    dataToArduino += String(myCustomMessage.isGlobal);
+    dataToArduino += String(myReceivedMessage.isPing);
+    dataToArduino += String(myReceivedMessage.isGlobal);
     
-    if(myCustomMessage.isGlobal){
+    if(myReceivedMessage.isGlobal){
       dataToArduino += "-";
     }else{
-      dataToArduino += String(myCustomMessage.address);
+      dataToArduino += String(myReceivedMessage.address);
     }
-    if(myCustomMessage.isPing){
+    if(myReceivedMessage.isPing){
       dataToArduino += "000";
     }else{
-      dataToArduino += String(myCustomMessage.value / 100 % 10);
-      dataToArduino += String(myCustomMessage.value / 10 % 10);
-      dataToArduino += String(myCustomMessage.value % 10);
+      dataToArduino += String(myReceivedMessage.value / 100 % 10);
+      dataToArduino += String(myReceivedMessage.value / 10 % 10);
+      dataToArduino += String(myReceivedMessage.value % 10);
     }
     messageSent(5, 6);
-    dataToArduino += String(myCustomMessage.sender);
+    dataToArduino += String(myReceivedMessage.sender);
     dataToArduino +="\n";
     //first char isPing 0 or 1
     //second char isGlobal 0 or 1
@@ -146,29 +147,29 @@ void handleMessageFromArduino(String message){
   }
   int sender = message[6] - '0';
 
-  myCustomToSend.isPing = isPing;
-  myCustomToSend.isGlobal = isGlobal;
-  myCustomToSend.address = address;
-  myCustomToSend.value = value;
-  myCustomToSend.sender = sender;
+  myMessageToSend.isPing = isPing;
+  myMessageToSend.isGlobal = isGlobal;
+  myMessageToSend.address = address;
+  myMessageToSend.value = value;
+  myMessageToSend.sender = sender;
   //debugging
   Serial.print("\nisPing: ");
-  Serial.println(myCustomToSend.isPing);
+  Serial.println(myMessageToSend.isPing);
   Serial.print("isGlobal: ");
-  Serial.println(myCustomToSend.isGlobal);
+  Serial.println(myMessageToSend.isGlobal);
   Serial.print("address: ");
-  Serial.println(myCustomToSend.address);
+  Serial.println(myMessageToSend.address);
   Serial.print("value: ");
-  Serial.println(myCustomToSend.value);
+  Serial.println(myMessageToSend.value);
   Serial.print("sender: ");
-  Serial.println(myCustomToSend.sender);
+  Serial.println(myMessageToSend.sender);
  
 
   if (address>=0){
-    esp_now_send(receiverAddress[address], (uint8_t *) &myCustomToSend, sizeof(myCustomToSend));
+    esp_now_send(receiverAddress[address], (uint8_t *) &myMessageToSend, sizeof(myMessageToSend));
   } else {
     for (int i=0; i<sizeof(receiverAddress) / sizeof(receiverAddress[0]);i++){
-      esp_now_send(receiverAddress[i], (uint8_t *) &myCustomToSend, sizeof(myCustomToSend));
+      esp_now_send(receiverAddress[i], (uint8_t *) &myMessageToSend, sizeof(myMessageToSend));
     }
   }
 }

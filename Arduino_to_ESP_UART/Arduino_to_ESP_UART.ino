@@ -15,13 +15,18 @@ bool state = false;
 #define MY_SENDER_ID 4
 
 /* sender IDs:
-  0 empty(jakub)
-  1 Sushma
-  2 Varvara
-  3 Nasim
-  4 Supriya 
-  5 Zaq 
-  6 Razoul 
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+
 */
 
 void setup(){

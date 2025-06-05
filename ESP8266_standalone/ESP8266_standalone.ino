@@ -1,4 +1,4 @@
-#include <esp_now.h>
+#include <espnow.h>
 #include "ESP8266WiFi.h"
 
 //Started SoftwareSerial at RX and TX pin of ESP8266/NodeMCU
@@ -94,8 +94,35 @@ void messageReceived(uint8_t* macAddr, uint8_t* incomingData, uint8_t len){
             macAddr[0], macAddr[1], macAddr[2], macAddr[3], macAddr[4], macAddr[5]);    
     // Print the received message
     Serial.print("Message: ");
-    Serial.println(myReceivedMessage.text);
-    Serial.println();
+//Sending data to arduino using serial connection
+    String data;
+
+    data += String(myReceivedMessage.isPing);
+    data += String(myReceivedMessage.isGlobal);
+    
+    if(myReceivedMessage.isGlobal){
+      data += "-";
+    }else{
+      data += String(myReceivedMessage.address);
+    }
+    if(myReceivedMessage.isPing){
+      data += "000";
+    }else{
+      data += String(myReceivedMessage.value / 100 % 10);
+      data += String(myReceivedMessage.value / 10 % 10);
+      data += String(myReceivedMessage.value % 10);
+    }
+    data += String(myReceivedMessage.sender);
+    data +="\n";
+    //first char isPing 0 or 1
+    //second char isGlobal 0 or 1
+    //third char if global insert any char (wont be read later anyway) else int 0-6 ADDRESS
+    //4th 5th and 6th if Ping insert any chars (wont be read later anyway) else int 000-255 VALUE
+    //7th int of my device 0-6
+
+    //EXAMPLE "01x1230"
+    Serial.print("complete string:    ");
+    Serial.println(data);
 }
 
 
@@ -172,23 +199,23 @@ void handleMessageFromNetwork(String message){
   
     //ReadingMessage from network as int variables
     //------------------------------------------------------------
-    bool isPing = (!myCustomMessage.isPing) ? false : true;
-    bool isGlobal = (!myCustomMessage.isGlobal) ? false : true;
+    bool isPing = (!myReceivedMessage.isPing) ? false : true;
+    bool isGlobal = (!myReceivedMessage.isGlobal) ? false : true;
     int address;
 
     if(isGlobal){
-      address = -1;
+        address = -1;
     }else{
-      address = (myCustomMessage.address);
+      address = (myReceivedMessage.address);
     }
     int value;
 
     if(isPing){
-      value = 0;
+        value = 0;
     }else{
-      value = myCustomMessage.value;
+        value = myReceivedMessage.value;
     }
-    int sender = myCustomMessage.sender;
+    int sender = myReceivedMessage.sender;
 
     // Serial.println(message); 
     // for (int i=0; i<7;i++){
@@ -196,7 +223,7 @@ void handleMessageFromNetwork(String message){
     // }
     
 
-    
+
     //handling message 
     //------------------------------------------------------------
 

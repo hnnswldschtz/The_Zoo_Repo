@@ -7,7 +7,7 @@ Send and receive data from esp8266 with Arduino Uno as mainboard and control log
     upload and run 
         Arduino_to_ESP_UART.ino on arduino
     upload and run 
-        ESP8266_antenna_uart.ino on esp8266 
+        ESP8266_antenna_uart.ino on esp8266 (NodeMCU 1.0)
 
 connect both devices via UART (rx->tx; tx->rx)
 RX (pin10) connect to D2 on ESPboard , TX (second one) connect to D1 use any free pins on your arduino

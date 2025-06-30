@@ -317,14 +317,7 @@ void setup(){
 
 void loop(){
 
-createAndSendMsgFromString("0031231");
-delay(10000); 
-createAndSendMsgFromString("0031232");
-delay(10000); 
-createAndSendMsgFromString("0031233");
-delay(10000); 
-createAndSendMsgFromString("0031234");
-delay(10000); 
-createAndSendMsgFromString("0031236");
-delay(10000); 
+createAndSendMsgFromString("0002235");
+delay(5000); 
+
 }

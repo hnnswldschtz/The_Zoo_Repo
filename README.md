@@ -27,7 +27,8 @@ __On Arduino__
     `#include <ZooUART.h>`
 
 
-#### Constructor ####
+#### library usage in your Arduino sketch:
+Constructor
     ZooUART zoo(rxPin, txPin, senderId);
 - rxPin: Arduino pin for receiving UART data
 - txPin: Arduino pin for transmitting UART data

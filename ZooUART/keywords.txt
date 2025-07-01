@@ -1,0 +1,8 @@
+ZooUART	KEYWORD1
+begin	KEYWORD2
+loop	KEYWORD2
+createMessage	KEYWORD2
+onGlobalPing	KEYWORD2
+onDirectPing	KEYWORD2
+onGlobalMessage	KEYWORD2
+onDirectMessage	KEYWORD2

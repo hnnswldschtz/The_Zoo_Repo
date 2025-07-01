@@ -14,7 +14,7 @@ Power:
     connect 3v3 on arduino to 3v3 on espboard to supply power from Arduino to espBoard. 
 
 
-#### Installation ####
+### Installation
 
 __On ESPBoard__ (NodeMCU 1.0), 
 - upload and run: `ESP8266_antenna_uart.ino`
@@ -27,7 +27,7 @@ __On Arduino__
     `#include <ZooUART.h>`
 
 
-#### library usage in your Arduino sketch:
+### library usage in your Arduino sketch:
 Constructor
     ZooUART zoo(rxPin, txPin, senderId);
 - rxPin: Arduino pin for receiving UART data

@@ -45,11 +45,11 @@ Call this in your main loop() to process incoming messages.
     String createMessage(bool ping, bool global, int address, int value, int sender);
 Creates a formatted message string.
 
-- ping: true for ping message, false otherwise
-g- lobal: true for global message, false for direct
-- address: Target address (ignored for global)
-- value: Value to send (ignored for ping)
-- sender: Sender ID
+- `ping`: true for ping message, false otherwise
+- `global`: true for global message, false for direct
+- `address`: Target address (ignored for global)
+- `value`: Value to send (ignored for ping)
+- `sender`: Sender ID
 
 Callback Registration
 Register functions to handle incoming messages:

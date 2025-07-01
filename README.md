@@ -16,9 +16,10 @@ Power:
 
 #### Installation ####
 
-- on ESPBoard (NodeMCU 1.0), upload and run:
-    ESP8266_antenna_uart.ino 
+__On ESPBoard__ (NodeMCU 1.0), 
+- upload and run: `ESP8266_antenna_uart.ino`
 
+__On Arduino__
 - download zooUART folder and copy it into ~/documents/Arduino/libraries
 - Restart the Arduino IDE.
 - Include the library in your sketch:

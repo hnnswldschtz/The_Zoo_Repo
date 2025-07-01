@@ -30,8 +30,8 @@ void setup() {
     Serial.begin(9600);
     zoo.begin();
     //set up and init callback handlers here
-    zoo.onGlobalMessage(onGlobalMessageHandler);
-    zoo.onDirectMessage(onDirectMessageHandler);
+    zoo.onGlobalMessage(GlobalMessageHandler);
+    zoo.onDirectMessage(DirectMessageHandler);
 }
 
 void loop() {

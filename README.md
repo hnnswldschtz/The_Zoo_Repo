@@ -112,10 +112,10 @@ void setup() {
 
 void loop() {
     zoo.loop();
-    // To send: zoo.softSerial.println(zoo.createMessage(...));
+    // To send: zoo.sendMessage(zoo.createMessage(...));
     // Send a direct message to address 3, with value 123, from this device
     String msg = zoo.createMessage(false, false, 3, 123, 4); // ping, global, address, value, sender
-    zoo.softSerial.println(msg); // send the message through the esp antenna to everybody. 
+   zoo.sendMessage(msg); // send the message through the esp antenna to everybody. 
 }
 ```
 

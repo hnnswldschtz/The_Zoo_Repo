@@ -48,6 +48,10 @@ String ZooUART::createMessage(bool ping, bool global, int address, int value, in
     return dataToESP;
 }
 
+void ZooUART::sendMessage(String message) {
+    softSerial.println(message);
+}
+
 void ZooUART::handleMessageFromNode(String message) {
     if (message.length() < 7) return; // basic check
 

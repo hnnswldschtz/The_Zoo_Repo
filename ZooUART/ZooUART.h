@@ -11,6 +11,7 @@ public:
     void begin(long baud = 9600);
     void loop();
     String createMessage(bool ping, bool global, int address, int value, int sender);
+    void sendMessage(String message);
 
     // User-implementable callbacks
     void onGlobalPing(void (*cb)());

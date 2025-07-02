@@ -95,14 +95,23 @@ void setup(){
  
 void loop(){
   //TESTING SEND TO Device ESP
-    if(true){
-      myMessageToSend.isPing = random(0,2);
-      myMessageToSend.isGlobal = random(0,2);
-      myMessageToSend.address = random(1,6);
-      myMessageToSend.value = random(0,255);
-      myMessageToSend.sender = random(0,6);
-      esp_now_send(receiverAddress[myMessageToSend.address], (uint8_t *) &myMessageToSend, sizeof(myMessageToSend));
-      Serial.println("sending random data");
+  if(true){
+    for (int k=0; k<250; k+=50){
+      for (int i=0; i<sizeof(receiverAddress) / sizeof(receiverAddress[0]); i++){
+        myMessageToSend.isPing = 0;
+        myMessageToSend.isGlobal = 0;
+        myMessageToSend.address = i;
+        myMessageToSend.value = k;
+        myMessageToSend.sender = random(0,9);
+        esp_now_send(receiverAddress[myMessageToSend.address], (uint8_t *) &myMessageToSend, sizeof(myMessageToSend));
+        Serial.print("sending random data to: ");
+        Serial.print(myMessageToSend.address);
+        Serial.print(" with value: ");
+        Serial.println(myMessageToSend.value);
+        delay (10);
+      }
+      delay(10000);
     }
-    delay(10000);
+    
+  }
 }

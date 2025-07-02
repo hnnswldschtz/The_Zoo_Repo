@@ -1,26 +1,34 @@
 # The Zoo Repo
-## Code and documentation for The Zoo project 
-
-### Using esp8266 as a external WIFI/espNow antenna:
-Send and receive data from esp8266 (nodeMCu 1.0) with Arduino Uno as mainboard and control logic:
-
-#### connect both devices via UART (rx->tx; tx->rx) and power (GND,3v3):
-
-Data: 
-    On arduino connect pin 10 (rx) to D2 on ESPboard and 
-    11 (tx) on arduino to D1 on espboard (nodeMCu 1.0)
-Power: 
-    connect GND Arduino <-> to GND EspBoard and 
-    connect 3v3 on arduino to 3v3 on espboard to supply power from Arduino to espBoard. 
 
 
-### Installation
+### Using esp8266 as a external WIFI/espNow antenna: 
+Send and receive data from esp8266 (nodeMCu 1.0) with Arduino Uno as mainboard and control logic.
+
+Three things needed: 
+
+1. connect both devices via UART (rx->tx; tx->rx) and power (GND,3v3)
+2. upload and run `ESP8266_antenna_uart.ino` on ESPboard
+install zooUART Library to Arduino IDE
+3. include `#include <ZooUART.h>` into your sketch and make use of it
+
+
+
+### 1. Connect
+- Data:
+    - connect __Arduino pin 10 (rx) to D2 on ESPboard__
+    - connect __Arduino 11 (tx) to D1 on ESPboard__ (nodeMCu 1.0)
+- Power:
+    - connect __GND Arduino <-> to GND EspBoard__
+    - connect __3v3 on arduino to 3v3 on espboard__ 
+
+
+### 2. Installation
 
 __On ESPBoard__ (NodeMCU 1.0), 
 - upload and run: `ESP8266_antenna_uart.ino`
 
 __On Arduino__
-- download zooUART folder and copy it into ~/documents/Arduino/libraries
+- download *zooUART* folder and copy it into the library folder: ~/documents/Arduino/libraries (or similar in windows)
 - Restart the Arduino IDE.
 - Include the library in your sketch:
 
@@ -28,11 +36,11 @@ __On Arduino__
 
 
 ### library usage in your Arduino sketch:
-Constructor
-    ZooUART zoo(rxPin, txPin, senderId);
+Constructor: 
+`ZooUART zoo(rxPin, txPin, senderId);`
 - rxPin: Arduino pin for receiving UART data
 - txPin: Arduino pin for transmitting UART data
-- senderId: Unique ID (0-9) for this device
+- senderId: Unique ID (0-9) for this (your) device
 
 Methods:
 
@@ -51,7 +59,7 @@ Creates a formatted message string.
 - `value`: Value to send (ignored for ping)
 - `sender`: Sender ID
 
-Callback Registration
+<br>Callback Registration.\
 Register functions to handle incoming messages:
 
     void onGlobalPing(void (*cb)());
@@ -59,11 +67,54 @@ Register functions to handle incoming messages:
     void onGlobalMessage(void (*cb)(int sender, int value));
     void onDirectMessage(void (*cb)(int sender, int value));
 
+### Example
+```c++
+include <ZooUART.h>
+
+
+ZooUART zoo(10, 11, 4); // init with RX pin, TXpin, your ID
+
+
+// function definitions (give what ever name you want)
+// need to be registered as callbacks in setup();
+
+void myGlobalMessageHandler(int sender, int value) {
+    // put whatever you need when a global message is incoming 
+    Serial.print("Global Msg from ");
+    Serial.print(sender);
+    Serial.print(": ");
+    Serial.println(value);
+}
+
+void myDirectMessageHandler(int sender, int value) {
+     // put whatever you need when a direct message to you is incoming 
+    Serial.print("Direct Msg from ");
+    Serial.print(sender);
+    Serial.print(": ");
+    Serial.println(value);
+}
+
+void setup() {
+    Serial.begin(9600);
+    zoo.begin();
+    //register and init callback handlers here (your functions!)
+    zoo.onGlobalMessage(myGlobalMessageHandler);
+    zoo.onDirectMessage(myDirectMessageHandler);
+}
+
+void loop() {
+    zoo.loop();
+    // To send: zoo.softSerial.println(zoo.createMessage(...));
+    // Send a direct message to address 3, with value 123, from this device
+    String msg = zoo.createMessage(false, false, 3, 123, 4); // ping, global, address, value, sender
+    zoo.softSerial.println(msg); // send the message through the esp antenna to everybody. 
+}
+```
 
 
 
 ### Using esp8266 standalone
-send and receive data from esp8266 as mainboar with all control logic:
+send and receive data from esp8266 as mainboard with all control logic:
     
     upload and run 
         ESP8266_standalone.ino

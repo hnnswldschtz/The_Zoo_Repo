@@ -9,7 +9,7 @@ public:
     ZooUART(uint8_t rxPin, uint8_t txPin, int senderId);
 
     void begin(long baud = 9600);
-    void loop();
+    void watch();
     String createMessage(bool ping, bool global, int address, int value, int sender);
     void sendMessage(String message);
 

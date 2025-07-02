@@ -37,44 +37,6 @@ __On Arduino__
 
 ### library usage in your Arduino sketch: ###
 
-Constructor: 
-~~~c++ 
-ZooUART zoo(rxPin, txPin, senderId);
-~~~
-
-- rxPin: Arduino pin for receiving UART data
-- txPin: Arduino pin for transmitting UART data
-- senderId: Unique ID (0-9) for this (your) device
-
-Methods:
-
-~~~c++ 
-void begin(long baud = 9600);
-~~~
-Initializes the SoftwareSerial port. Default baud rate is 9600.
-~~~c++ 
-void loop();
-~~~
-Call this in your main loop() to process incoming messages.
-~~~ c++ 
-String createMessage(bool ping, bool global, int address, int value, int sender);
-~~~
-Creates a formatted message string.
-
-- `ping`: true for ping message, false otherwise
-- `global`: true for global message, false for direct
-- `address`: Target address (ignored for global)
-- `value`: Value to send (ignored for ping)
-- `sender`: Sender ID
-
-<br>Callback Registration.\
-Register functions to handle incoming messages:
-~~~ c++ 
-    void onGlobalPing(void (*cb)());
-    void onDirectPing(void (*cb)(int sender));
-    void onGlobalMessage(void (*cb)(int sender, int value));
-    void onDirectMessage(void (*cb)(int sender, int value));
-~~~
 ### Example
 ```c++
 include <ZooUART.h>
@@ -111,17 +73,57 @@ void setup() {
 }
 
 void loop() {
-    zoo.loop();
+    zoo.watch();
     // To send: zoo.sendMessage(zoo.createMessage(...));
     // Send a direct message to address 3, with value 123, from this device
-    String msg = zoo.createMessage(false, false, 3, 123, 4); // ping, global, address, value, sender
-   zoo.sendMessage(msg); // send the message through the esp antenna to everybody. 
+    // because of an IF THEN or switch statement example: Button press
+    String msg = zoo.createMessage(0, 0, 3, 123, 4); // ping, global, address, value, sender
+    zoo.sendMessage(msg); // send the message through the esp antenna to the zoo. 
 }
 ```
 
+### Library Reference 
+Constructor: 
+~~~c++ 
+ZooUART zoo(rxPin, txPin, senderId);
+~~~
+
+- rxPin: Arduino pin for receiving UART data
+- txPin: Arduino pin for transmitting UART data
+- senderId: Unique ID (0-9) for this (your) device
+
+Methods:
+
+~~~c++ 
+void begin(long baud = 9600);
+~~~
+Initializes the SoftwareSerial port. Default baud rate is 9600.
+~~~c++ 
+void watch();
+~~~
+Call this in your main loop() to process incoming messages.
+~~~ c++ 
+String createMessage(bool ping, bool global, int address, int value, int sender);
+~~~
+Creates a formatted message string.
+
+- `ping`: true for ping message, false otherwise
+- `global`: true for global message, false for direct
+- `address`: Target address (ignored for global)
+- `value`: Value to send (ignored for ping)
+- `sender`: Sender ID
+
+<br>Callback Registration.\
+Register functions to handle incoming messages:
+~~~ c++ 
+    void onGlobalPing(void (*cb)());
+    void onDirectPing(void (*cb)(int sender));
+    void onGlobalMessage(void (*cb)(int sender, int value));
+    void onDirectMessage(void (*cb)(int sender, int value));
+~~~
 
 
-## Using esp8266 standalone (without Arduino UNO as host)
+#### Using esp8266 standalone (without Arduino UNO as host)
 #### send and receive data from esp8266 as mainboard with all control logic:
     
 - use 

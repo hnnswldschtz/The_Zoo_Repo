@@ -7,7 +7,7 @@ void ZooUART::begin(long baud) {
     softSerial.begin(baud);
 }
 
-void ZooUART::loop() {
+void ZooUART::watch() {
     bool dataFlag = false;
     while (softSerial.available() > 0) {
         char c = softSerial.read();

@@ -10,8 +10,6 @@ Thumbs.db
 # Git attributes
 .gitattributes
 
-.gitignore
-
 # IDE and editor files
 .vscode/
 .idea/

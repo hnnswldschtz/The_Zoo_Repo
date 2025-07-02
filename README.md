@@ -30,7 +30,8 @@ __On ESPBoard__ (NodeMCU 1.0),
 __On Arduino__
 - download *zooUART* folder and copy it into the library folder: ~/documents/Arduino/libraries (or similar in windows)
 - Restart the Arduino IDE.
-- Include the library in your sketch:
+
+### 3. Include the library in your sketch:
 ~~~ c++
 #include <ZooUART.h>
 ~~~
@@ -47,9 +48,11 @@ ZooUART zoo(10, 11, 4); // init with RX pin, TXpin, your ID
 
 // function definitions (give what ever name you want)
 // need to be registered as callbacks in setup();
+// these Callbacks will be executed as soon as there is an incoming message for you!
 
 void myGlobalMessageHandler(int sender, int value) {
     // put whatever you need when a global message is incoming 
+    // like start your motor, servo, LEDs...  
     Serial.print("Global Msg from ");
     Serial.print(sender);
     Serial.print(": ");
@@ -57,7 +60,8 @@ void myGlobalMessageHandler(int sender, int value) {
 }
 
 void myDirectMessageHandler(int sender, int value) {
-     // put whatever you need when a direct message to you is incoming 
+     // put whatever you need when a direct message to you is incoming
+     // like start your motor, servo, LEDs...  
     Serial.print("Direct Msg from ");
     Serial.print(sender);
     Serial.print(": ");
@@ -113,17 +117,20 @@ Creates a formatted message string.
 - `value`: Value to send (ignored for ping)
 - `sender`: Sender ID
 
-<br>Callback Registration.\
-Register functions to handle incoming messages:
+
+
+
 ~~~ c++ 
-    void onGlobalPing(void (*cb)());
-    void onDirectPing(void (*cb)(int sender));
-    void onGlobalMessage(void (*cb)(int sender, int value));
-    void onDirectMessage(void (*cb)(int sender, int value));
+    void onGlobalPing(function1);
+    void onDirectPing(function2);
+    void onGlobalMessage(function3);
+    void onDirectMessage(function4);
 ~~~
 
+Register callback functions to handle incoming messages:
+Once registered these Callbacks will be executed as soon as there is an incoming message for you!
 
-#### Using esp8266 standalone (without Arduino UNO as host)
+## Using esp8266 standalone (without Arduino UNO as host)
 #### send and receive data from esp8266 as mainboard with all control logic:
     
 - use 

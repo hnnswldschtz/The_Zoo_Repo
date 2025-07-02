@@ -1,7 +1,7 @@
 # The Zoo Repo
 
 
-### Using esp8266 as a external WIFI/espNow antenna: 
+## Using esp8266 as a external WIFI/espNow antenna: 
 Send and receive data from esp8266 (nodeMCu 1.0) with Arduino Uno as mainboard and control logic.
 
 Three things needed: 
@@ -31,26 +31,34 @@ __On Arduino__
 - download *zooUART* folder and copy it into the library folder: ~/documents/Arduino/libraries (or similar in windows)
 - Restart the Arduino IDE.
 - Include the library in your sketch:
+~~~ c++
+#include <ZooUART.h>
+~~~
 
-    `#include <ZooUART.h>`
+### library usage in your Arduino sketch: ###
 
-
-### library usage in your Arduino sketch:
 Constructor: 
-`ZooUART zoo(rxPin, txPin, senderId);`
+~~~c++ 
+ZooUART zoo(rxPin, txPin, senderId);
+~~~
+
 - rxPin: Arduino pin for receiving UART data
 - txPin: Arduino pin for transmitting UART data
 - senderId: Unique ID (0-9) for this (your) device
 
 Methods:
 
-    void begin(long baud = 9600);
+~~~c++ 
+void begin(long baud = 9600);
+~~~
 Initializes the SoftwareSerial port. Default baud rate is 9600.
-
-    void loop();
+~~~c++ 
+void loop();
+~~~
 Call this in your main loop() to process incoming messages.
-
-    String createMessage(bool ping, bool global, int address, int value, int sender);
+~~~ c++ 
+String createMessage(bool ping, bool global, int address, int value, int sender);
+~~~
 Creates a formatted message string.
 
 - `ping`: true for ping message, false otherwise
@@ -61,12 +69,12 @@ Creates a formatted message string.
 
 <br>Callback Registration.\
 Register functions to handle incoming messages:
-
+~~~ c++ 
     void onGlobalPing(void (*cb)());
     void onDirectPing(void (*cb)(int sender));
     void onGlobalMessage(void (*cb)(int sender, int value));
     void onDirectMessage(void (*cb)(int sender, int value));
-
+~~~
 ### Example
 ```c++
 include <ZooUART.h>
@@ -113,12 +121,51 @@ void loop() {
 
 
 
-### Using esp8266 standalone
-send and receive data from esp8266 as mainboard with all control logic:
+## Using esp8266 standalone (without Arduino UNO as host)
+#### send and receive data from esp8266 as mainboard with all control logic:
     
-    upload and run 
-        ESP8266_standalone.ino
-    on esp8266 (NodeMCU 1.0)
+- use 
+`ESP8266_standalone.ino` on esp8266 (NodeMCU 1.0) as a base for your code
+
+
+to create and send messages use:
+``` c++
+
+createAndSendMsgFromString("0062235");  
+    //EXAMPLE private msg to #6, val 223 from #5 
+    // Ping   Glob  addr  val   sender
+    // 0      0     6     223   5
+
+```
+to handle incoming messages use and modify according to your needs:
+``` c++
+void handleGlobalMessage(int sender, int value){
+  
+  // put your code here (remove existing content if you like )
+  globalMessage = value;  
+  directMessageSender = sender; 
+  Serial.print("Incoming global Message from: "); 
+  Serial.print(sender); 
+  Serial.print(" value: "); 
+  Serial.println(value); 
+  digitalWrite(13, HIGH);
+  delay(100);
+    digitalWrite(13, LOW);
+}
+
+void handleDirectMessage(int sender, int value){
+  // put your code here (remove existing content if you like )  
+  directMessage = value;
+  directMessageSender = sender; 
+  Serial.print("Incoming direct Message from: "); 
+  Serial.print(sender); 
+  Serial.print(" value: "); 
+  Serial.println(value); 
+  digitalWrite(13, HIGH);
+  delay(100);
+    digitalWrite(13, LOW);
+}
+```
     
 
 

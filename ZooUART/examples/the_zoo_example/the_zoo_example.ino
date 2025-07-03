@@ -1,23 +1,21 @@
 #include <ZooUART.h>
 
-// The sender ID uniquely identifies this device on the ZooUART network.
-// It is used so that when messages are sent, other devices know who sent them.
-// For example, in zoo.createMessage(..., sender), the sender ID is included in the message.
-ZooUART zoo(10, 11, 4); // RX, TX, Sender ID
-
+ // init with RX pin, TXpin, your ID
+ZooUART zoo(10, 11, 4); 
 
 // function definitions 
 // define your own handlers here, give what ever name you want, but reflect that in setup()
 // because they need to be initalized in setup();
 // define whatever you want in these functions
 
+//called whenever a global message is received
 void GlobalMessageHandler(int sender, int value) {
     Serial.print("Global Msg from ");
     Serial.print(sender);
     Serial.print(": ");
     Serial.println(value);
 }
-
+// called whenever a direct message is received
 void DirectMessageHandler(int sender, int value) {
     Serial.print("Direct Msg from ");
     Serial.print(sender);
@@ -29,7 +27,7 @@ void DirectMessageHandler(int sender, int value) {
 void setup() {
     Serial.begin(9600);
     zoo.begin();
-    //set up and init callback handlers here
+    //set up and register callback handlers here
     zoo.onGlobalMessage(GlobalMessageHandler);
     zoo.onDirectMessage(DirectMessageHandler);
 }

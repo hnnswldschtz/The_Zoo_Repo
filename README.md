@@ -80,7 +80,7 @@ void loop() {
     zoo.watch();
     // To send: zoo.sendMessage(zoo.createMessage(...));
     // Send a direct message to address 3, with value 123, from this device
-    // because of an IF THEN or switch statement example: Button press
+    // because of an IF THEN or switch statement example: Button press, sensor threshold, ...
     String msg = zoo.createMessage(0, 0, 3, 123, 4); // ping, global, address, value, sender
     zoo.sendMessage(msg); // send the message through the esp antenna to the zoo. 
 }
@@ -96,28 +96,29 @@ ZooUART zoo(rxPin, txPin, senderId);
 - txPin: Arduino pin for transmitting UART data
 - senderId: Unique ID (0-9) for this (your) device
 
-Methods:
+##### Methods:
 
+Initializes the SoftwareSerial port. Default baud rate is 9600:
 ~~~c++ 
 void begin(long baud = 9600);
 ~~~
-Initializes the SoftwareSerial port. Default baud rate is 9600.
+<br> Call this in your main loop() to constantly process incoming messages:
 ~~~c++ 
 void watch();
 ~~~
-Call this in your main loop() to process incoming messages.
+
+<br> Creates a formatted message string:
 ~~~ c++ 
 String createMessage(bool ping, bool global, int address, int value, int sender);
 ~~~
-Creates a formatted message string.
-
-- `ping`: true for ping message, false otherwise
-- `global`: true for global message, false for direct
+- `ping`: true for ping message, false otherwise (not needed, set always to false)
+- `global`: true for global message, false for direct 
 - `address`: Target address (ignored for global)
 - `value`: Value to send (ignored for ping)
 - `sender`: Sender ID
 
 
+<br> Register callback functions to handle incoming messages:
 
 
 ~~~ c++ 
@@ -127,7 +128,6 @@ Creates a formatted message string.
     void onDirectMessage(function4);
 ~~~
 
-Register callback functions to handle incoming messages:
 Once registered these Callbacks will be executed as soon as there is an incoming message for you!
 
 ## Using esp8266 standalone (without Arduino UNO as host)

@@ -189,12 +189,12 @@ void createAndSendMsgFromString(String message){ //handleMessageFromArduino
     Serial.println(myMessageToSend.sender);
   
   //SEND MESSAGE 
-    if (address>=0){ // if address is not global
+    //if (address>=0){ // if address is not global
       esp_now_send(receiverAddress[address], (uint8_t *) &myMessageToSend, sizeof(myMessageToSend));
-    } else { //0 is global message->adress all devices
-      for (int i=0; i<sizeof(receiverAddress) / sizeof(receiverAddress[0]);i++){
-        esp_now_send(receiverAddress[i], (uint8_t *) &myMessageToSend, sizeof(myMessageToSend));
-      }
+   //} else { //0 is global message->adress all devices
+      //for (int i=0; i<sizeof(receiverAddress) / sizeof(receiverAddress[0]);i++){
+       // esp_now_send(receiverAddress[i], (uint8_t *) &myMessageToSend, sizeof(myMessageToSend));
+   //   }
     }
 }
 

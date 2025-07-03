@@ -117,6 +117,10 @@ String createMessage(bool ping, bool global, int address, int value, int sender)
 - `value`: Value to send (ignored for ping)
 - `sender`: Sender ID
 
+<br> send formatted message string to the network:
+~~~ c++ 
+void sendMessage(String message) 
+~~~
 
 <br> Register callback functions to handle incoming messages:
 

@@ -34,10 +34,13 @@ void setup() {
     zoo.onDirectMessage(DirectMessageHandler);
 }
 
+
 void loop() {
-    zoo.watch();
-    // To send: zoo.sendMessage(zoo.createMessage(...));
+    zoo.watch(); //must be called in loop to check for incoming messages
+    // If you want to send messages, you can do so here or in response to some event. ( e.g. button press, sensor reading, etc.)
     // Send a direct message to address 3, with value 123, from this device
-    String msg = zoo.createMessage(false, false, 3, 123, 4); // ping, global, address, value, sender
+    String msg = zoo.createMessage(false, false, 0, 255, 3); // ping, global, address, value, sender
     zoo.sendMessage(msg);
+
+  
 }

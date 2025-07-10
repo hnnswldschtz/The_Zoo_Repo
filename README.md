@@ -1,6 +1,10 @@
 # The Zoo Repo
 
+Make ESpp8266 accessible for Arduino Library Manager:
+Copy and paste into Arduino preferences: 
+http://arduino.esp8266.com/stable/package_esp8266com_index.json
 
+#include <ESP8266WiFi.h>
 ## Using esp8266 as a external WIFI/espNow antenna: 
 Send and receive data from esp8266 (nodeMCu 1.0) with Arduino Uno as mainboard and control logic.
 
